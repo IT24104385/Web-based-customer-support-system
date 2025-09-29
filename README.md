@@ -1,29 +1,52 @@
-# Web‑based Customer Support System
+# Web-based Customer Support System
 
-A Java Spring Boot + SQL web app for ticketing, notifications, feedback, analytics, and knowledge base.
+This project is a minimal Spring Boot starter for building a customer support portal. It includes Spring MVC, Thymeleaf for server-rendered pages, and Spring Data JPA for persistence with a MySQL database.
 
-## 🎯 Objectives
-- Submit & track support tickets
-- Assign & prioritize work
-- Notify users & staff
-- Capture feedback
-- Basic analytics dashboard
+## Getting Started
 
-## 🧱 Tech Stack
-- Backend: Spring Boot (Java 17+), JPA/Hibernate
-- DB: MySQL/PostgreSQL (pick one)
-- Build: Maven or Gradle
-- Auth: Spring Security (session/JWT)
-- (Optional) Frontend: React + Vite
+1. Ensure you have Java 17 and Maven installed.
+2. Update the database credentials in `src/main/resources/application.properties` to match your local environment.
+3. Run the application:
 
-## 🚀 Quick Start (Dev)
 ```bash
-# 1) Clone
-git clone https://github.com/<org-or-user>/customer-support-system.git
-cd customer-support-system/backend
+mvn spring-boot:run
+```
 
-# 2) Configure DB: copy example and edit values
-cp src/main/resources/application.properties.example src/main/resources/application.properties
+Visit <http://localhost:8080> for the home page and <http://localhost:8080/login> for the login page.
 
-# 3) Run (Maven example)
-./mvnw spring-boot:run
+## Project Structure
+
+```
+.
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── group09
+│   │   │           └── customersupport
+│   │   │               ├── CustomerSupportApplication.java
+│   │   │               └── controllers
+│   │   │                   └── HomeController.java
+│   │   └── resources
+│   │       ├── application.properties
+│   │       ├── static
+│   │       │   └── css
+│   │       │       └── main.css
+│   │       └── templates
+│   │           ├── home.html
+│   │           └── login.html
+│   └── test
+│       └── java
+│           └── com
+│               └── group09
+│                   └── customersupport
+│                       └── SmokeTest.java
+└── .github
+    └── workflows
+        └── ci.yml
+```
+
+## Database Configuration
+
+The default MySQL connection URL points to `support_db` with username `root` and password `yourpassword`. Update the values in `application.properties` to match your local database credentials. You can also create an `application-local.properties` file (ignored by Git) for machine-specific overrides.
