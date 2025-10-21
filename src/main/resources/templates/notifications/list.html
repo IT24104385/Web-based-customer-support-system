@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Notifications</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/notifications}">Notifications (<span th:text="${unreadCount}"></span>)</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h2>Your Notifications</h2>
+
+    <div th:if="${notifications.isEmpty()}">
+        <p>No notifications yet.</p>
+    </div>
+
+    <ul>
+        <li th:each="n : ${notifications}">
+            <strong th:text="${n.title}"></strong><br>
+            <span th:text="${n.message}"></span><br>
+            <small th:text="${#dates.format(n.createdAt, 'yyyy-MM-dd HH:mm')}"></small>
+            <span th:if="${!n.readStatus}">🔔 Unread</span>
+
+            <form th:action="@{'/notifications/mark-read/' + ${n.id}}" method="post" style="display:inline;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" th:if="${!n.readStatus}">Mark as Read</button>
+            </form>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Knowledge Base</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <h2>Knowledge Base</h2>
+    <form method="get" th:action="@{/knowledgebase}">
+        <input type="text" name="q" placeholder="Search articles..."/>
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        <li th:each="a : ${articles}">
+            <a th:href="@{'/knowledgebase/' + ${a.id}}" th:text="${a.title}"></a>
+            (<span th:text="${a.category}"></span>)
+        </li>
+    </ul>
+</div>
+</body>
+</html>

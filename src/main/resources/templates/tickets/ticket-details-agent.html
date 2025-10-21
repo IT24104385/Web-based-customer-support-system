@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ticket Details (Agent)</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <a th:href="@{/agent/tickets}">Back to Assigned Tickets</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h2 th:text="'Ticket #' + ${ticket.id} + ': ' + ${ticket.subject}"></h2>
+    <p>Status: <span th:text="${ticket.status}"></span></p>
+    <p>Customer: <span th:text="${ticket.customer.fullName}"></span></p>
+    <p>Description: <span th:text="${ticket.description}"></span></p>
+
+    <h3>Conversation</h3>
+    <div th:each="m : ${messages}">
+        <p>
+            <b th:text="${m.author.fullName}"></b>
+            <span th:if="${m.internalNote}">(Internal Note)</span>:
+            <span th:text="${m.content}"></span>
+        </p>
+    </div>
+
+    <h3>Reply to Customer</h3>
+    <form th:action="@{'/agent/tickets/' + ${ticket.id} + '/reply'}" method="post" th:object="${newMessage}">
+        <textarea th:field="*{content}" rows="3"></textarea><br>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit">Send Reply</button>
+    </form>
+
+    <h3>Add Internal Note</h3>
+    <form th:action="@{'/agent/tickets/' + ${ticket.id} + '/note'}" method="post">
+        <textarea name="note" rows="3"></textarea><br>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit">Add Note</button>
+    </form>
+</div>
+</body>
+</html>

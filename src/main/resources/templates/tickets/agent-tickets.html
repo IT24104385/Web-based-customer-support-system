@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Assigned Tickets</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <a th:href="@{/agent/dashboard}">Dashboard</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h2>Assigned Tickets</h2>
+    <table>
+        <thead><tr><th>ID</th><th>Subject</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+        <tr th:each="t : ${tickets}">
+            <td th:text="${t.id}"></td>
+            <td>
+                <a th:href="@{'/agent/tickets/' + ${t.id}}" th:text="${t.subject}"></a>
+            </td>
+            <td th:text="${t.status}"></td>
+            <td>
+                <form th:action="@{'/agent/tickets/update/' + ${t.id}}" method="post">
+                    <select name="status">
+                        <option value="IN_PROGRESS">In Progress</option>
+                        <option value="RESOLVED">Resolved</option>
+                        <option value="CLOSED">Closed</option>
+                    </select>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

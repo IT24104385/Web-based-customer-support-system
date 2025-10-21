@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Profile</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <a th:href="@{/}">Home</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h2>Edit Profile</h2>
+    <p th:if="${success}" class="success" th:text="${success}"></p>
+    <p th:if="${error}" class="error" th:text="${error}"></p>
+
+    <form th:action="@{/profile}" method="post">
+        <div class="form-field">
+            <label>Full Name</label><br>
+            <input type="text" name="fullName" th:value="${user.fullName}" required>
+        </div>
+        <div class="form-field">
+            <label>Email</label><br>
+            <input type="email" name="email" th:value="${user.email}" required>
+        </div>
+        <div class="form-field">
+            <label>New Password (leave blank to keep current)</label><br>
+            <input type="password" name="password">
+        </div>
+        <button type="submit">Update Profile</button>
+    </form>
+</div>
+</body>
+</html>

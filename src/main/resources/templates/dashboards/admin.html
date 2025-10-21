@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <!-- 🔹 Navigation Bar -->
+    <div class="nav">
+        <a th:href="@{/admin/dashboard}">Dashboard</a>
+        <a th:href="@{/admin/users}">Manage Users</a>
+        <a th:href="@{/admin/tickets}">Manage Tickets</a>
+        <a th:href="@{/admin/feedback}">Manage Feedback</a> <!-- ✅ Updated label -->
+        <a th:href="@{/admin/articles}">Manage Knowledge Base</a>
+        <a th:href="@{/profile}">Profile</a>
+        <a th:href="@{/notifications}">
+            🔔 Notifications (<span th:text="${unreadCount}">0</span>)
+        </a>
+        <a th:href="@{/admin/analytics}">📈 Analytics & Reports</a>
+
+
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h2>Admin Dashboard</h2>
+
+    <!-- 🔹 Dashboard Quick Access Links -->
+    <ul>
+        <li><a th:href="@{/admin/users}">Manage Users</a></li>
+        <li><a th:href="@{/admin/tickets}">Manage Tickets</a></li>
+        <li><a th:href="@{/admin/feedback}">Manage Feedback</a></li> <!-- ✅ Updated wording -->
+        <li><a th:href="@{/admin/articles}">Manage Knowledge Base</a></li>
+
+    </ul>
+
+    <!-- 🔹 Optional Section: Summary Cards -->
+    <div class="dashboard-cards">
+        <div class="card">
+            <h3>Tickets</h3>
+            <p>View and assign tickets</p>
+            <a th:href="@{/admin/tickets}">Open</a>
+        </div>
+
+        <div class="card">
+            <h3>Users</h3>
+            <p>Manage agents, admins, and customers</p>
+            <a th:href="@{/admin/users}">Open</a>
+        </div>
+
+        <div class="card">
+            <h3>Feedback</h3>
+            <p>View, search, and moderate customer feedback</p>
+            <a th:href="@{/admin/feedback}">Open</a> <!-- ✅ Quick link to moderation -->
+        </div>
+
+        <div class="card">
+            <h3>Knowledge Base</h3>
+            <p>Edit or add articles for users</p>
+            <a th:href="@{/admin/articles}">Open</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

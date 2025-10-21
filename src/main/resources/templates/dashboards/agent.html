@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Agent Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <a th:href="@{/agent/dashboard}">Dashboard</a>
+        <a th:href="@{/agent/tickets}">Assigned Tickets</a>
+        <a th:href="@{/knowledgebase}">Knowledge Base</a>
+        <a th:href="@{/profile}">Profile</a> <!-- NEW -->
+        <a th:href="@{/notifications}">
+            🔔 Notifications (<span th:text="${unreadCount}">0</span>)
+        </a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+
+    <h2>Agent Dashboard</h2>
+    <p>Welcome! From here you can:</p>
+    <ul>
+        <li><a th:href="@{/agent/tickets}">View & Update Assigned Tickets</a></li>
+    </ul>
+</div>
+</body>
+</html>

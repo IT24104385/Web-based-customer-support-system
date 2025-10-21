@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Manage Users</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+  <div class="nav">
+    <a th:href="@{/admin/dashboard}">Admin Dashboard</a>
+    <a th:href="@{/admin/users}">Manage Users</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      <button type="submit">Logout</button>
+    </form>
+  </div>
+
+  <h2>User Management</h2>
+  <p>
+    <a th:href="@{/admin/users/create-agent}">Create New Agent</a> |
+    <a th:href="@{/admin/users/create-admin}">Create New Admin</a>
+  </p>
+
+  <h2>User Management</h2>
+
+  <!-- 🔍 Filter Form -->
+  <form th:action="@{/admin/users/search}" method="get" style="margin-bottom:20px;">
+    <label>Role:</label>
+    <select name="role">
+      <option value="">All</option>
+      <option th:each="r : ${roles}"
+              th:value="${r}" th:text="${r}"
+              th:selected="${r == selectedRole}"></option>
+    </select>
+
+    <label>Status:</label>
+    <select name="enabled">
+      <option value="">All</option>
+      <option value="true" th:selected="${enabled == true}">Active</option>
+      <option value="false" th:selected="${enabled == false}">Disabled</option>
+    </select>
+
+    <button type="submit">Filter</button>
+    <a th:href="@{/admin/users}" style="margin-left:10px;">Reset</a>
+  </form>
+
+
+
+  <table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="u : ${users}">
+      <td th:text="${u.id}"></td>
+      <td th:text="${u.fullName}"></td>
+      <td th:text="${u.email}"></td>
+      <td th:text="${u.role}"></td>
+      <td>
+        <span th:text="${u.enabled} ? 'Active' : 'Disabled'"></span>
+      </td>
+      <td>
+        <form th:action="@{'/admin/users/toggle/' + ${u.id}}" method="post" style="display:inline;">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <button type="submit" th:text="${u.enabled} ? 'Deactivate' : 'Activate'"></button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination controls -->
+  <div style="margin-top: 20px;">
+    <div th:if="${userPage.totalPages > 1}">
+      <a th:if="${!userPage.first}"
+         th:href="@{|/admin/users/search?role=${roleParam}&enabled=${enabledParam}&page=${userPage.number - 1}|}">
+        ← Previous
+      </a>
+
+      <span th:text="'Page ' + (${userPage.number + 1}) + ' of ' + ${userPage.totalPages}"></span>
+
+      <a th:if="${!userPage.last}"
+         th:href="@{|/admin/users/search?role=${roleParam}&enabled=${enabledParam}&page=${userPage.number + 1}|}">
+        Next →
+      </a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

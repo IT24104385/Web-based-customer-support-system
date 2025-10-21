@@ -1,0 +1,36 @@
+<!-- File: templates/register.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav"><a th:href="@{/}">Home</a> <a th:href="@{/login}">Login</a></div>
+    <h2>Create a Customer Account</h2>
+
+    <p th:if="${error}" class="error" th:text="${error}"></p>
+
+    <form th:action="@{/register}" method="post" th:object="${registerDto}">
+        <!-- Enable CSRF after we turn it on in SecurityConfig -->
+        <div class="form-field">
+            <label>Full name</label><br>
+            <input type="text" th:field="*{fullName}" />
+            <div class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+        </div>
+        <div class="form-field">
+            <label>Email</label><br>
+            <input type="email" th:field="*{email}" />
+            <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+        <div class="form-field">
+            <label>Password</label><br>
+            <input type="password" th:field="*{password}" />
+            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+</div>
+</body>
+</html>

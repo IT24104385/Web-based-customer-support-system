@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Analytics Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      background: #f5f6fa;
+      color: #333;
+    }
+
+    header {
+      background: #0066cc;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .export-buttons a {
+      color: white;
+      text-decoration: none;
+      background: #004c99;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-left: 10px;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .export-buttons a:hover {
+      background: #003366;
+    }
+
+    main {
+      padding: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: scale(1.01);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      color: #0066cc;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .metric {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    canvas {
+      width: 100%;
+      height: 260px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      background: #f1f5ff;
+      border: 1px solid #d4e0ff;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .metric-card h3 {
+      color: #004080;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .metric-card p {
+      font-size: 14px;
+      margin: 4px 0 0;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1><i class="fa-solid fa-chart-line"></i> Analytics & Reports</h1>
+  <div class="export-buttons">
+    <a th:href="@{/admin/analytics/export/pdf(fromDate=${fromDate}, toDate=${toDate}, agentId=${selectedAgent})}">
+      Export PDF
+    </a>
+
+
+  </div>
+</header>
+
+
+<section style="padding: 20px; background: #eef3fc;">
+  <form th:action="@{/admin/analytics}" method="get" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+    <div>
+      <label>From:</label>
+      <input type="date" name="fromDate" th:value="${fromDate}" />
+    </div>
+    <div>
+      <label>To:</label>
+      <input type="date" name="toDate" th:value="${toDate}" />
+    </div>
+    <div>
+      <label>Support Agent:</label>
+      <select name="agentId">
+        <option th:value="' '">All Agents</option>
+        <option th:each="a : ${agents}"
+                th:value="${a.id}"
+                th:text="${a.fullName}"
+                th:selected="${selectedAgent == a.id}">
+        </option>
+      </select>
+    </div>
+    <button type="submit" style="background:#0066cc;color:white;padding:6px 12px;border:none;border-radius:6px;">Filter</button>
+    <a th:href="@{/admin/analytics}" style="color:#0066cc;text-decoration:none;">Reset</a>
+  </form>
+</section>
+
+<main>
+  <!-- 📊 Ticket Volume -->
+  <section class="card">
+    <h2><i class="fa-solid fa-ticket"></i> Ticket Volume per Month</h2>
+    <canvas id="volumeChart"></canvas>
+  </section>
+
+  <!-- ⏱️ Resolution Time -->
+  <section class="card">
+    <h2><i class="fa-solid fa-clock"></i> Resolution Time Overview</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <h3>Average</h3>
+        <p th:text="${resolutionData.averageResolutionHours} + ' hrs'">0 hrs</p>
+      </div>
+      <div class="metric-card">
+        <h3>Resolved</h3>
+        <p th:text="${resolutionData.totalResolved}">0</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 👨‍💼 Agent Performance -->
+  <section class="card">
+    <h2><i class="fa-solid fa-user-tie"></i> Agent Performance</h2>
+    <canvas id="agentChart"></canvas>
+  </section>
+
+  <!-- ⭐ Customer Satisfaction -->
+  <section class="card">
+    <h2><i class="fa-solid fa-star"></i> Customer Satisfaction</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <h3>Avg Rating</h3>
+        <p th:text="${satisfactionData.averageRating} + ' / 5'">0 / 5</p>
+      </div>
+      <div class="metric-card">
+        <h3>Total Feedback</h3>
+        <p th:text="${satisfactionData.totalFeedback}">0</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2025 Customer Support Analytics | Powered by Spring Boot + Chart.js
+</footer>
+
+<script th:inline="javascript">
+  // --- Ticket Volume ---
+  const volumeLabels = /*[[${volumeData.labels}]]*/ [];
+  const volumeValues = /*[[${volumeData.values}]]*/ [];
+  new Chart(document.getElementById('volumeChart'), {
+    type: 'bar',
+    data: {
+      labels: volumeLabels,
+      datasets: [{
+        label: 'Tickets per Month',
+        data: volumeValues,
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: '#369',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // --- Agent Performance ---
+  const agentLabels = /*[[${performanceData.labels}]]*/ [];
+  const agentValues = /*[[${performanceData.values}]]*/ [];
+  new Chart(document.getElementById('agentChart'), {
+    type: 'bar',
+    data: {
+      labels: agentLabels,
+      datasets: [{
+        label: 'Resolved Tickets',
+        data: agentValues,
+        backgroundColor: 'rgba(255, 159, 64, 0.6)',
+        borderColor: '#c66',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+</body>
+</html>

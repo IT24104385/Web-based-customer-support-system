@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Tickets</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <a th:href="@{/admin/dashboard}">Dashboard</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h2>All Tickets</h2>
+
+    <form th:action="@{/admin/tickets/search}" method="get" style="margin-bottom:20px;">
+        <label>Status:</label>
+        <select name="status">
+            <option value="">All</option>
+            <option th:each="s : ${T(com.example.demo_customer_support_system.ticket_management.model.TicketStatus).values()}"
+                    th:value="${s}" th:text="${s}"
+                    th:selected="${s == status}"></option>
+        </select>
+
+        <label>Agent:</label>
+        <select name="agentId">
+            <option value="">All</option>
+            <option th:each="a : ${agents}" th:value="${a.id}" th:text="${a.fullName}"
+                    th:selected="${a.id == agentId}"></option>
+        </select>
+
+        <label>Keyword/Category:</label>
+        <input type="text" name="category" th:value="${category}" placeholder="Search by subject"/>
+
+        <label>From:</label>
+        <input type="datetime-local" name="fromDate" th:value="${fromDate}"/>
+
+        <label>To:</label>
+        <input type="datetime-local" name="toDate" th:value="${toDate}"/>
+
+        <button type="submit">Filter</button>
+        <a th:href="@{/admin/tickets}" style="margin-left:10px;">Reset</a>
+    </form>
+
+    <table>
+        <thead><tr><th>ID</th><th>Subject</th><th>Customer</th><th>Agent</th><th>Status</th><th>Assign/Reassign</th></tr></thead>
+        <tbody>
+        <tr th:each="t : ${tickets}">
+            <td th:text="${t.id}"></td>
+            <td>
+                <a th:href="@{'/admin/tickets/' + ${t.id}}" th:text="${t.subject}"></a>
+            </td>
+
+            <td th:text="${t.customer.fullName}"></td>
+            <td th:text="${t.assignedAgent != null ? t.assignedAgent.fullName : 'Unassigned'}"></td>
+            <td th:text="${t.status}"></td>
+            <td>
+                <form th:action="@{'/admin/tickets/assign/' + ${t.id}}" method="post">
+                    <select name="agentId" required>
+                        <option th:each="a : ${agents}" th:value="${a.id}" th:text="${a.fullName}"></option>
+                    </select>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit">Assign</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

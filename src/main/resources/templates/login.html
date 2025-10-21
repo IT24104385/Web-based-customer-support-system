@@ -1,0 +1,32 @@
+<!-- File: templates/login.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="container">
+    <div class="nav"><a th:href="@{/}">Home</a> <a th:href="@{/register}">Register</a></div>
+    <h2>Login</h2>
+    <p th:if="${param.error}" class="error">Invalid email or password.</p>
+    <p th:if="${param.logout}" class="msg">You have been logged out.</p>
+    <p th:if="${msg}" class="msg" th:text="${msg}"></p>
+
+    <form th:action="@{/login}" method="post">
+        <!-- When we enable CSRF, we will add: <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="form-field">
+            <label>Email:</label><br>
+            <input type="text" name="username" placeholder="you@example.com"/>
+        </div>
+        <div class="form-field">
+            <label>Password:</label><br>
+            <input type="password" name="password" />
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</div>
+</body>
+</html>

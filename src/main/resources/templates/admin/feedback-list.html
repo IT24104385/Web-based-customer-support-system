@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Feedback Moderation</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h2>Feedback Management</h2>
+
+<form method="get" action="/admin/feedback">
+  <input type="text" name="keyword" placeholder="Search comments or tag">
+  <select name="rating">
+    <option value="">All Ratings</option>
+    <option th:each="r : ${#numbers.sequence(1,5)}" th:value="${r}" th:text="${r}">1</option>
+  </select>
+  <button type="submit">Search</button>
+</form>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Agent</th>
+    <th>Rating</th>
+    <th>Comments</th>
+    <th>Tag</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="f : ${feedbackList}">
+    <td th:text="${f.id}"></td>
+    <td th:text="${f.customer != null ? f.customer.fullName : 'Unknown'}"></td>
+    <td th:text="${f.agent != null ? f.agent.fullName : 'Unassigned'}"></td>
+    <td th:text="${f.rating}"></td>
+    <td th:text="${f.comment}"></td>
+    <td>
+      <form th:action="@{'/admin/feedback/tag/' + ${f.id}}" method="post">
+        <input type="text" name="tag" th:value="${f.tag}">
+        <button type="submit">Update Tag</button>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/admin/feedback/delete/' + ${f.id}}" method="post">
+        <button type="submit" style="color:red;">Delete</button>
+      </form>
+    </td>
+  </tr>
+
+  </tbody>
+</table>
+</body>
+</html>
